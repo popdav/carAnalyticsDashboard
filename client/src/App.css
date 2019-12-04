@@ -1,0 +1,25 @@
+.App {
+
+}
+.searchBar {
+    margin-top: 2%;
+    width: 30%;
+    float: left;
+}
+.plots {
+    margin-top: 2%;
+    width: 60%;
+    float: right;
+    margin-left: 10%;
+}
+.generalInfo {
+
+    margin-left: 25%;
+}
+.map {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+.footer{
+    margin-bottom: 10%;
+}
