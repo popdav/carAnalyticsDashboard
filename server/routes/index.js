@@ -5,16 +5,16 @@ const assert = require('assert');
 
 const url = 'mongodb://localhost:27017';
 
-const dbName = 'cardb';
-
+const dbName = 'Polovni';
 let cardb = null;
 
-MongoClient.connect(url, { useUnifiedTopology: true } , function(err, client) {
+MongoClient.connect(url, { useUnifiedTopology: true } , async function(err, client) {
   assert.equal(null, err);
-  console.error("Connected successfully to server");
 
   cardb = client.db(dbName);
-
+  await cardb.collection("polovni").createIndex({'marka':1, 'model':1});
+  await cardb.collection("test_cene").createIndex({'link':1, 'date':1});
+  console.error("Connected successfully to server");
   // client.close();
 });
 
@@ -22,33 +22,47 @@ router.get('/', function(req, res, next) {
   res.send( { title: 'Express' });
 });
 
-router.post('/queryFromDateToDate', (req, res)=> {
+router.post('/queryFromDateToDate',  (req, res)=> {
   // console.log("Usao!");
-    console.log(req.body);
-  const collectionName = 'cars';
-  const match_object =   req.body.searchBody;
-  const date_begin = '2019-11-14';
-  const date_end = '2019-11-17';
+    // console.log(req.body);
+  const collectionName = 'polovni';
+  let match_object =   req.body.searchBody;
+  match_object["link"] = { "$ne": 0 };
+  console.log(match_object);
+
   cardb.collection(collectionName).aggregate([
-    {"$match" : match_object},
-    {"$unwind": "$istorija"},
-    {"$project": {"istorijski_podaci": {"$objectToArray": "$istorija"}, "place" : "$mesto"}},
-    {"$unwind": "$istorijski_podaci"},
-    {"$match" : {
-        "istorijski_podaci.v": {"$gt":0},
-        "istorijski_podaci.k": {"$gte": req.body.dates[0], "$lte": req.body.dates[1]},
-      }
-    },
-    {"$group":
-          {
-            "_id": "$istorijski_podaci.k",
-            "places" : {"$push":"$$ROOT"},
-            "avg_price": {"$avg": "$istorijski_podaci.v"},
-            "max": { "$max" : "$istorijski_podaci.v" },
-            "min": { "$min" : "$istorijski_podaci.v" }
+      {
+          "$match": match_object
+      },
+      {
+          '$lookup': {
+              'from': 'test_cene',
+              'localField': 'link',
+              'foreignField': 'link',
+              'as': 'istorija_cena'
           }
-    },
-    {"$sort": {"_id": 1}}
+      },
+      {
+          '$unwind': '$istorija_cena'
+      },
+      {
+          "$match" : { "istorija_cena.date": {"$gte": new Date(req.body.dates[0]), "$lte": new Date(req.body.dates[1])} }
+      },
+      {
+          '$group': {
+              '_id': '$istorija_cena.date',
+              "places" : {"$push":"$$ROOT"},
+              'avg_price': {
+                  '$avg': '$istorija_cena.price'
+              },
+              "max": { "$max" : "$istorija_cena.price" },
+              "min": { "$min" : "$istorija_cena.price" }
+
+          }
+      },
+      {
+          "$sort": {"_id": 1}
+      }
 
   ]).toArray((err, results) => {
     assert.equal(err, null);
@@ -59,12 +73,59 @@ router.post('/queryFromDateToDate', (req, res)=> {
 
 });
 
+router.post('/test',  (req, res)=> {
+    // console.log("Usao!");
+    // console.log(req.body);
+    const collectionName = 'polovni';
+    let match_object =   {"marka" : "Audi", "model": "A4"};
+
+    console.log(match_object);
+
+    cardb.collection(collectionName).aggregate([
+
+        {
+            "$group": {
+                "_id" : match_object,
+                stdDev: {"$stdDevPop": "$cena"},
+                mean: {"$avg": "$cena"},
+                data : {"$push":"$cena"},
+            }
+        }
+
+    ]).toArray((err, results) => {
+        assert.equal(err, null);
+        // console.log(results);
+        res.send(results);
+    });
+
+
+});
+
+router.post('/places',  (req, res)=> {
+    // console.log("Usao!");
+    console.log(req.body);
+    const collectionName = 'polovni';
+    let match_object =   req.body;
+
+    console.log(match_object);
+
+    cardb.collection(collectionName)
+        .aggregate([ {"$match" : match_object}, {"$project": {"mesto" : 1, "_id" : 0 }}])
+        .toArray((err, results) => {
+        assert.equal(err, null);
+        // console.log(results);
+        res.send(results);
+    });
+
+
+});
+
 
 router.post('/distinctMakes', (req, res)=> {
-    const collectionName = 'cars';
+    const collectionName = 'polovni';
     cardb.collection(collectionName)
         .distinct(
-            "Marka",
+            "marka",
             {}, // query object
             (function(err, docs){
                 if(err){
@@ -78,11 +139,11 @@ router.post('/distinctMakes', (req, res)=> {
 });
 
 router.post('/distinctModels', (req, res)=> {
-    const collectionName = 'cars';
+    const collectionName = 'polovni';
     console.log(req.body)
     cardb.collection(collectionName)
         .distinct(
-            "Model",
+            "model",
             req.body, // query object
             (function(err, docs){
                 if(err){
@@ -97,10 +158,10 @@ router.post('/distinctModels', (req, res)=> {
 
 
 router.post('/distinctType', (req, res)=> {
-    const collectionName = 'cars';
+    const collectionName = 'polovni';
     cardb.collection(collectionName)
         .distinct(
-            "Karoserija",
+            "karoserija",
             {}, // query object
             (function(err, docs){
                 if(err){
