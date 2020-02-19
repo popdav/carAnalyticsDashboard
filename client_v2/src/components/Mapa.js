@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Map, TileLayer, Marker, withLeaflet } from 'react-leaflet';
+import { Map, TileLayer, Marker } from 'react-leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
-import L from 'leaflet';
+
 import axios from 'axios'
 import "./App.css";
 import {connect} from "react-redux";
@@ -14,61 +14,86 @@ class Mapa extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
-            show: false,
+            data: props.data,
             places: []
         };
     }
-    async UNSAFE_componentWillReceiveProps(nextProps){
-        console.log(nextProps.data);
-        if(nextProps.data.length === 0) return;
-        let array_of_places = await axios.post('/places', nextProps.data[0].searchBody);
-        array_of_places = array_of_places.data.map(e => e['mesto']);
-        console.log(array_of_places);
+     componentDidMount() {
+
+        if(this.props.data.length === 0) return;
+        this.searchForLatLng();
+
+    }
+
+    async searchForLatLng() {
+        let array_of_places = await axios.post('/places', this.state.data.searchBody);
+        array_of_places = array_of_places.data.map(e => e['mesto'] + "+srbija");
+
         array_of_places = await Promise.all(array_of_places.map(e => {
             return provider.search({query: e})
         }));
-
-        console.log(array_of_places);
+        console.log(array_of_places)
+        /*
         array_of_places = array_of_places.map(e => e[0]);
         this.setState({
-            data: [...nextProps.data[0].data],
-            stylePlot: nextProps.data[0].style,
-            x: nextProps.data[0].x,
-            y: nextProps.data[0].y,
-            show: true,
-            name: nextProps.data[0].name,
             places: array_of_places
-        });
+        });*/
+    }
+
+    showMap() {
+        const position = [44.5, 19.5];
+        const  zoom = 6;
+        return (
+            <div>
+                <label className=" justify-content-center">Mapa za {this.state.data.name}</label>
+                <Map center={position} zoom={zoom} maxZoom={18}>
+                    <TileLayer
+                        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        crossOrigin={null}
+                    />react
+                    <MarkerClusterGroup>
+                        {this.state.places.map((e, i) => {
+
+                            if(e === undefined) return {};
+                            return(
+
+                                <Marker key={i} position={[e.y, e.x]}>
+
+                                </Marker>
+
+                            )
+                        })}
+                    </MarkerClusterGroup>
+                </Map>
+            </div>
+        );
 
     }
 
     render() {
         const position = [44.5, 19.5];
         const  zoom = 6;
-        let styleT = {display: "block"};
-        if(!this.state.show)
-            styleT = {display: "none"};
         return (
-            <div>
-
+            <div >
+                <label>Mapa za {this.state.data.name}</label>
                 <Map center={position} zoom={zoom} maxZoom={18}>
                     <TileLayer
                         attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
+                    />react
                     <MarkerClusterGroup>
-                    {this.state.places.map((e, i) => {
-                        console.log(e);
-                        if(e === undefined) return ;
-                        return(
+                        {this.state.places.map((e, i) => {
 
-                            <Marker key={i} position={[e.y, e.x]}>
+                            if(e === undefined) return {};
+                            return(
 
-                            </Marker>
+                                <Marker key={i} position={[e.y, e.x]}>
 
-                        )
-                    })}
+                                </Marker>
+
+                            )
+                        })}
                     </MarkerClusterGroup>
                 </Map>
                 <br/>
@@ -77,9 +102,5 @@ class Mapa extends Component{
     }
 }
 
-const mapStateToProps = state => {
-    return { data: state.data }
-};
 
-export default connect(mapStateToProps, {})(Mapa);
-
+export default Mapa

@@ -4,7 +4,7 @@ import './bootstrap.min.css'
 import './App.css';
 import { connect } from 'react-redux'
 import Plot from "react-plotly.js";
-import Mapa from "./Mapa";
+import Mapa from './Mapa'
 
 
 class Plots extends Component {
@@ -17,7 +17,7 @@ class Plots extends Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps){
-        console.log(nextProps.data)
+
         if(nextProps.data.length === 0)
             return;
         this.setState({
@@ -31,19 +31,11 @@ class Plots extends Component {
 
     }
 
-
-    render() {
-        let styleT = {};
-        if(!this.state.show)
-            styleT = {display: "none"};
-
+    showPlots() {
         return (
-            <div style={styleT}>
-
-
-                <div className=" plots" style={this.state.stylePlot}>
-
-                    <Plot
+            <div className="plots" style={this.state.stylePlot}>
+                <div className="d-flex justify-content-center">
+                    <Plot style = {{width: "100%"}}
                         data={
                             this.props.data.map((e, i) => {
                                 return {
@@ -56,7 +48,10 @@ class Plots extends Component {
                         }
                         layout={ { title: 'Prosecna cena po danima'} }
                     />
-                    <Plot
+                </div>
+
+                <div className="d-flex justify-content-center">
+                    <Plot style = {{width: "100%"}}
                         data={
                             this.props.data.map((e, i) => {
                                 return {
@@ -69,10 +64,26 @@ class Plots extends Component {
                         }
                         layout={ { title: 'Prosecan broj vozila po danima'} }
                     />
-
-
-
                 </div>
+                <br/>
+
+                {this.props.data.map((e, i) => {
+
+                    return(
+                        <div key={i} className=" justify-content-center">
+                            <Mapa  data={e}/>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
+    render() {
+
+        return (
+            <div className="container">
+                {this.state.show ? this.showPlots() : ""}
             </div>
         );
     }

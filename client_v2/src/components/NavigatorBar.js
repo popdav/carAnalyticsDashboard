@@ -22,7 +22,7 @@ class NavigatorBar extends Component {
             <div >
                 <nav className="navbar navbar-dark bg-primary">
                     <div className="container">
-                        <div className="navbar-brand font-weight-bold">WheelScan</div>
+                        <div className="navbar-brand font-weight-bold">AutoAnaliza.com</div>
                         <span className="text-white">
                             <Octicon size="medium" icon={Person}/>
                             <span>{"   "}</span>

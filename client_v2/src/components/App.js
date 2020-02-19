@@ -10,7 +10,7 @@ import NavigatorBar from "./NavigatorBar";
 
 import { Provider } from 'react-redux'
 import store from '../store/index'
-import Mapa from "./Mapa";
+
 
 
 class App extends Component {
@@ -31,8 +31,7 @@ class App extends Component {
           <div className="container App">
 
               <SearchBar />
-              <br/>
-              <Mapa />
+
               <br/>
               <Plots/>
 
