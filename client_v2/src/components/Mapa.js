@@ -25,6 +25,7 @@ class Mapa extends Component{
     }
 
     async searchForLatLng() {
+
         let res = await axios.post('/places', this.state.data.searchBody);
         let array_of_places = res.data;
         //array_of_places = array_of_places.data.map(e => e['mesto']);

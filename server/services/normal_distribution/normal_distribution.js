@@ -12,12 +12,17 @@ MongoClient.connect(url, { useUnifiedTopology: true } , async function(err, clie
 
 
 async function get(match_object) {
-
+    let groupID = JSON.parse(JSON.stringify(match_object));
+    match_object['cena'] = {'$gte': 0};
+    console.log(match_object)
+    console.log(groupID)
     return await db.collection('polovni').aggregate([
-
+        {
+            "$match" : match_object
+        },
         {
             "$group": {
-                "_id" : match_object,
+                _id : null,
                 stdDev: {"$stdDevPop": "$cena"},
                 mean: {"$avg": "$cena"},
                 data : {"$push":"$cena"},
@@ -29,9 +34,10 @@ async function get(match_object) {
 
 async function calc_normal(match_object) {
 
-    let resp = get(match_object);
-    resp.data.map(price => (price - resp.mean) / resp.stdDev);
-    console.log(resp.data);
+    let resp = await get(match_object);
+    resp = resp[0];
+    resp.data = resp.data.map(price => (price - resp.mean) / resp.stdDev);
+
     return resp;
 }
 

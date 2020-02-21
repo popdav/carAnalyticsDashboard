@@ -3,7 +3,7 @@ const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 const geolocation = require('../services/geolocation/geolocation');
-const normalDistribution = require('../services/geolocation/normal_distribution');
+const normalDistribution = require('../services/normal_distribution/normal_distribution');
 
 const url = 'mongodb://localhost:27017';
 
@@ -75,11 +75,9 @@ router.post('/queryFromDateToDate',  (req, res)=> {
 
 });
 
-router.post('/test',  async (req, res)=> {
-    let match_object =   {"marka" : "Renault", "model": "Megane"};
-
+router.post('/normal',  async (req, res)=> {
+    let match_object =   req.body;
     let result = await normalDistribution.calc_normal(match_object);
-    console.log(result);
     res.send(result);
 });
 
