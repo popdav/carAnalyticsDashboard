@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const geolocation = require('../services/geolocation/geolocation');
 
 const url = 'mongodb://localhost:27017';
 
@@ -101,22 +102,10 @@ router.post('/test',  (req, res)=> {
 
 });
 
-router.post('/places',  (req, res)=> {
-    // console.log("Usao!");
-    console.log(req.body);
-    const collectionName = 'polovni';
-    let match_object =   req.body;
-
-    console.log(match_object);
-
-    cardb.collection(collectionName)
-        .aggregate([ {"$match" : match_object}, {"$project": {"mesto" : 1, "_id" : 0 }}])
-        .toArray((err, results) => {
-        assert.equal(err, null);
-        // console.log(results);
-        res.send(results);
-    });
-
+router.post('/places',  async (req, res)=> {
+    // match_object = {'marka': 'Renault', 'model': 'Megane'};
+    let coords = geolocation.map_to_coords(req.body);
+    res.send(coords);
 
 });
 
