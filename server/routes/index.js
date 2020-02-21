@@ -103,8 +103,8 @@ router.post('/test',  (req, res)=> {
 });
 
 router.post('/places',  async (req, res)=> {
-    // match_object = {'marka': 'Renault', 'model': 'Megane'};
-    let coords = geolocation.map_to_coords(req.body);
+    console.log(req.body)
+    let coords = await geolocation.map_to_coords(req.body);
     res.send(coords);
 
 });

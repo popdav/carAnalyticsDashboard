@@ -4,7 +4,6 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 import axios from 'axios'
 import "./App.css";
-import {connect} from "react-redux";
 import MarkerClusterGroup from "./MarkerClusterGroup";
 require("leaflet.markercluster");
 require('react-leaflet-markercluster/dist/styles.min.css');
@@ -21,20 +20,21 @@ class Mapa extends Component{
      componentDidMount() {
 
         if(this.props.data.length === 0) return;
-        this.searchForLatLng();
+        this.searchForLatLng().then();
 
     }
 
     async searchForLatLng() {
-        let array_of_places = await axios.post('/places', this.state.data.searchBody);
-        array_of_places = array_of_places.data.map(e => e['mesto']);
-        console.log(array_of_places)
-        array_of_places = await Promise.all(array_of_places.map(e => {
-            return provider.search({query: e})
-        }));
+        let res = await axios.post('/places', this.state.data.searchBody);
+        let array_of_places = res.data;
+        //array_of_places = array_of_places.data.map(e => e['mesto']);
+        //console.log(array_of_places)
+        //array_of_places = await Promise.all(array_of_places.map(e => {
+        //    return provider.search({query: e})
+        //}));
         console.log(array_of_places)
 
-        array_of_places = array_of_places.map(e => e[0]);
+        //array_of_places = array_of_places.map(e => e[0]);
         this.setState({
             places: array_of_places
         });
@@ -58,7 +58,7 @@ class Mapa extends Component{
                             if(e === undefined) return {};
                             return(
 
-                                <Marker key={i} position={[e.y, e.x]}>
+                                <Marker key={i} position={[e['lat'], e['lng']]}>
 
                                 </Marker>
 

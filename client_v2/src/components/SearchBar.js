@@ -69,36 +69,38 @@ class SearchBar extends Component {
         return (
             <div className="searchBar text-white bg-primary">
 
-                <form className="searchBarForm">
+                <form className="searchBarForm ">
                     <div className="d-flex justify-content-center">
                         <label >Datumi oglasa:</label>
-
                         <DateRangePicker
-                            className="bg-light"
+                            className="bg-light input-group-text"
                             onChange={this.dateChange}
                             value={this.state.date}
                         />
                     </div>
                     <br/>
+                    <div className="d-flex justify-content-between">
+                        <div className="forms">
+                            <Form index={1} formRef={ref => (this.form = ref)} dates={this.state.date}/>
+                            <br/>
+                            <div style={styleForm}>
+                                <Form index={2} formRef={ref => (this.form2 = ref)} dates={this.state.date}/>
+                                <br/>
+                            </div>
+                        </div>
 
-                    <Form index={1} formRef={ref => (this.form = ref)} dates={this.state.date}/>
-                    <br/>
-                    <div style={styleForm}>
-                        <Form index={2} formRef={ref => (this.form2 = ref)} dates={this.state.date}/>
-                        <br/>
-                    </div>
-                    <div >
-                        <div className="d-flex justify-content-center">
-                            <button type="button" onClick={this.buttonAdd} className="btn btn-primary mb-2">
-                                {buttonText}
-                            </button>
+                        <div className=" buttons">
+                            <div className="d-flex justify-content-end">
+                                <button type="button" onClick={this.buttonAdd} className="btn btn-primary mb-2">
+                                    {buttonText}
+                                </button>
+                            </div>
+
+                            <div className="d-flex justify-content-end">
+                                <button type="button" onClick={this.buttonSearch} className="btn btn-warning mb-2">Pretrazi</button>
+                            </div>
                         </div>
                     </div>
-                    <br/>
-                    <div className="d-flex justify-content-center">
-                        <button type="button" onClick={this.buttonSearch} className="btn btn-warning mb-2">Pretrazi</button>
-                    </div>
-
                 </form>
             </div>
         );

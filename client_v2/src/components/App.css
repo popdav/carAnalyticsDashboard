@@ -18,6 +18,7 @@
 }
 .searchBarForm {
   padding: 2%;
+  height: 100%;
 }
 .plots {
 
@@ -43,4 +44,11 @@
 }
 .hide {
   display: none;
+}
+.forms {
+  width: 75%;
+
+}
+.buttons {
+  width: 25%;
 }
