@@ -3,6 +3,7 @@ const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 const geolocation = require('../services/geolocation/geolocation');
+const normalDistribution = require('../services/geolocation/normal_distribution');
 
 const url = 'mongodb://localhost:27017';
 
@@ -74,32 +75,12 @@ router.post('/queryFromDateToDate',  (req, res)=> {
 
 });
 
-router.post('/test',  (req, res)=> {
-    // console.log("Usao!");
-    // console.log(req.body);
-    const collectionName = 'polovni';
-    let match_object =   {"marka" : "Audi", "model": "A4"};
+router.post('/test',  async (req, res)=> {
+    let match_object =   {"marka" : "Renault", "model": "Megane"};
 
-    console.log(match_object);
-
-    cardb.collection(collectionName).aggregate([
-
-        {
-            "$group": {
-                "_id" : match_object,
-                stdDev: {"$stdDevPop": "$cena"},
-                mean: {"$avg": "$cena"},
-                data : {"$push":"$cena"},
-            }
-        }
-
-    ]).toArray((err, results) => {
-        assert.equal(err, null);
-        // console.log(results);
-        res.send(results);
-    });
-
-
+    let result = await normalDistribution.calc_normal(match_object);
+    console.log(result);
+    res.send(result);
 });
 
 router.post('/places',  async (req, res)=> {
