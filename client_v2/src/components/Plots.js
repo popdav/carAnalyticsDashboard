@@ -95,7 +95,7 @@ class Plots extends Component {
     render() {
 
         return (
-            <div className="container">
+            <div className="container Plots">
                 {this.state.show ? this.showPlots() : ""}
             </div>
         );

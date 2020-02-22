@@ -20,6 +20,8 @@ MongoClient.connect(url, { useUnifiedTopology: true } , async function(err, clie
   // client.close();
 });
 
+
+
 router.get('/', function(req, res, next) {
   res.send( { title: 'Express' });
 });
@@ -130,6 +132,23 @@ router.post('/distinctType', (req, res)=> {
     cardb.collection(collectionName)
         .distinct(
             "karoserija",
+            {}, // query object
+            (function(err, docs){
+                if(err){
+                    return console.log(err);
+                }
+                if(docs){
+                    res.send(docs.sort());
+                }
+            })
+        );
+});
+
+router.post('/distinctRegion', (req, res)=> {
+    const collectionName = 'geolocations';
+    cardb.collection(collectionName)
+        .distinct(
+            "city",
             {}, // query object
             (function(err, docs){
                 if(err){
