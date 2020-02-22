@@ -37,7 +37,6 @@ class Form extends Component {
 
         this.makeChange = this.makeChange.bind(this);
         this.modelChange = this.modelChange.bind(this);
-        //this.buttonSearch = this.buttonSearch.bind(this);
         this.fromKm = this.fromKm.bind(this);
         this.toKm = this.toKm.bind(this);
         this.typeChange = this.typeChange.bind(this);
@@ -248,59 +247,63 @@ class Form extends Component {
             <div>
                     <div className="form-inline d-flex justify-content-between">
                         <div className="vbox">
-                            <label htmlFor="make">Marka:</label>
-                            <select onChange={this.makeChange} className="form-control" id={"make" + this.state.key} >
-                                <option>None</option>
-                                {this.state.makes.map((e, key) => {
-                                    return (
-                                        <option key={key}>{e}</option>
-                                    )
-                                })}
-                            </select>
+                            <div className="vbox">
+                                <label htmlFor="make">Marka:</label>
+                                <select onChange={this.makeChange} className="form-control" id={"make" + this.state.key} >
+                                    <option>None</option>
+                                    {this.state.makes.map((e, key) => {
+                                        return (
+                                            <option key={key}>{e}</option>
+                                        )
+                                    })}
+                                </select>
+                            </div>
+
+                            <div className="vbox">
+                                <label htmlFor="model">Model:</label>
+                                <select onChange={this.modelChange} className="form-control" id={"model" + this.state.key}>
+                                    <option>None</option>
+                                    {this.state.models.map((e, key) => {
+                                        return (
+                                            <option key={key}>{e}</option>
+                                        )
+                                    })}
+                                </select>
+                            </div>
                         </div>
 
                         <div className="vbox">
-                            <label htmlFor="model">Model:</label>
-                            <select onChange={this.modelChange} className="form-control" id={"model" + this.state.key}>
-                                <option>None</option>
-                                {this.state.models.map((e, key) => {
-                                    return (
-                                        <option key={key}>{e}</option>
-                                    )
-                                })}
-                            </select>
+                            <div className="vbox">
+                                <label htmlFor="kmFrom">Kilometraza od (km):</label>
+                                <select onChange={this.fromKm} className="form-control" id={"kmFrom" + this.state.key}>
+                                    <option>None</option>
+                                    <option>0</option>
+                                    <option>100000</option>
+                                    <option>150000</option>
+                                    <option>200000</option>
+                                </select>
+                            </div>
+                            <div className="vbox">
+                                <label htmlFor="kmTo">Kilometraza do (km):</label>
+                                <select onChange={this.toKm} className="form-control" id={"kmTo" + this.state.key}>
+                                    <option>None</option>
+                                    <option>200000</option>
+                                    <option>150000</option>
+                                    <option>100000</option>
+                                    <option>0</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <div className="vbox">
-                            <label htmlFor="kmFrom">Kilometraza od (km):</label>
-                            <select onChange={this.fromKm} className="form-control" id={"kmFrom" + this.state.key}>
-                                <option>None</option>
-                                <option>0</option>
-                                <option>100000</option>
-                                <option>150000</option>
-                                <option>200000</option>
-                            </select>
-                        </div>
-                        <div className="vbox">
-                            <label htmlFor="kmTo">Kilometraza do (km):</label>
-                            <select onChange={this.toKm} className="form-control" id={"kmTo" + this.state.key}>
-                                <option>None</option>
-                                <option>200000</option>
-                                <option>150000</option>
-                                <option>100000</option>
-                                <option>0</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="form-inline d-flex justify-content-between">
-                        <div className="vbox">
-                            <label htmlFor="powerFrom">Snaga od (KS):</label>
-                            <input type="number"  onChange={this.fromPower} className="form-control" id={"powerFrom" + + this.state.key} />
-                        </div>
-                        <div className="vbox">
-                            <label htmlFor="powerTo">Snaga do (KS):</label>
-                            <input type="number"  onChange={this.toPower} className="form-control" id={"powerTo" + this.state.key} />
+                        <div className="col-md-auto vbox">
+                            <div className="vbox">
+                                <label htmlFor="powerFrom">Snaga od (KS):</label>
+                                <input type="number"  onChange={this.fromPower} className="form-control" id={"powerFrom" + + this.state.key} />
+                            </div>
+                            <div className="vbox">
+                                <label htmlFor="powerTo">Snaga do (KS):</label>
+                                <input type="number"  onChange={this.toPower} className="form-control " id={"powerTo" + this.state.key} />
+                            </div>
                         </div>
                         <div className="vbox">
                             <label htmlFor="type">Karoserija:</label>

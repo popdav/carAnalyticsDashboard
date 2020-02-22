@@ -7,6 +7,7 @@ import './App.css';
 import SearchBar from "./SearchBar";
 import Plots from "./Plots";
 import NavigatorBar from "./NavigatorBar";
+import Footer from "./Footer";
 
 import { Provider } from 'react-redux'
 import store from '../store/index'
@@ -36,6 +37,7 @@ class App extends Component {
               <Plots/>
 
           </div>
+        <Footer/>
         </Provider>
 
     );

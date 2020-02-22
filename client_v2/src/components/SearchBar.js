@@ -71,12 +71,16 @@ class SearchBar extends Component {
 
                 <form className="searchBarForm ">
                     <div className="d-flex justify-content-center">
-                        <label >Datumi oglasa:</label>
-                        <DateRangePicker
-                            className="bg-light input-group-text"
-                            onChange={this.dateChange}
-                            value={this.state.date}
-                        />
+                        <div className="vbox">
+                            <label >Datumi oglasa:</label>
+                            <div>
+                                <DateRangePicker
+                                    className="bg-light input-group-text"
+                                    onChange={this.dateChange}
+                                    value={this.state.date}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <br/>
                     <div className="d-flex justify-content-between">

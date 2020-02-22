@@ -5,6 +5,7 @@ import './App.css';
 import { connect } from 'react-redux'
 import Plot from "react-plotly.js";
 import Mapa from './Mapa'
+import NormalPlot from "./NormalPlot";
 import axios from 'axios'
 
 
@@ -21,15 +22,14 @@ class Plots extends Component {
 
         if(nextProps.data.length === 0)
             return;
-        let normal = await axios.post('/normal', nextProps.data[0].searchBody);
+
         this.setState({
             data: [...nextProps.data[0].data],
             stylePlot: nextProps.data[0].style,
             x: nextProps.data[0].x,
             y: nextProps.data[0].y,
             show: true,
-            name: nextProps.data[0].name,
-            normal: normal.data
+            name: nextProps.data[0].name
         });
 
     }
@@ -69,18 +69,15 @@ class Plots extends Component {
                     />
                 </div>
                 <br/>
-                <div className="d-flex justify-content-center">
-                    <Plot style = {{width: "100%"}}
-                          data={[
-                              {
-                                  type: 'histogram',
-                                  x: this.state.normal.data,
 
-                              }
-                          ]}
-                          layout={ { title: 'Prosecan broj vozila po danima'} }
-                    />
-                </div>
+                {this.props.data.map((e,i) => {
+                    return(
+                        <div key={i} className="justify-content-center">
+                            <NormalPlot  search={e.searchBody}/>
+                        </div>
+                    );
+                })}
+
                 <br/>
 
                 {this.props.data.map((e, i) => {
