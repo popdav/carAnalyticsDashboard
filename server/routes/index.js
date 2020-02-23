@@ -4,12 +4,22 @@ const geolocation = require('../services/geolocation/geolocation');
 const normalDistribution = require('../services/normal_distribution/normal_distribution');
 const distinctService = require('../services/distinct/distinct_queries');
 const priceTime = require('../services/avg_query/price_time');
+const cookieParser = require('cookie-parser');
+const cookieHandler = require('../services/cookies/cookie_handler');
 
-router.get('/', function(req, res, next) {
+router.get('/test', async(req, res) => {
+    console.log(req.cookies['userId']);
+    let result = await cookieHandler.handleLog(req.cookies['userId']);
+    res.cookie('userId', result.userId, { maxAge: 900000, httpOnly: true });
+    res.send(result.queries);
+});
+
+router.get('/', function(req, res) {
   res.send( { title: 'Express' });
 });
 
 router.post('/queryFromDateToDate',  async (req, res)=> {
+    await cookieHandler.updateQuery(req.cookies['userId']);
     let result = await priceTime.price_time(req.body.searchBody, req.body.dates[0], req.body.dates[1]);
     res.send(result);
 });
