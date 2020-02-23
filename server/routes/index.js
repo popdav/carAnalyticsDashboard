@@ -102,57 +102,57 @@ router.post('/distinct', async (req, res)=> {
 
 });
 
-router.post('/distinctModels', (req, res)=> {
-    const collectionName = 'polovni';
-    console.log(req.body);
-    cardb.collection(collectionName)
-        .distinct(
-            "model",
-            req.body, // query object
-            (function(err, docs){
-                if(err){
-                    return console.log(err);
-                }
-                if(docs){
-                    res.send(docs.sort());
-                }
-            })
-        );
-});
+// router.post('/distinctModels', (req, res)=> {
+//     const collectionName = 'polovni';
+//     console.log(req.body);
+//     cardb.collection(collectionName)
+//         .distinct(
+//             "model",
+//             req.body, // query object
+//             (function(err, docs){
+//                 if(err){
+//                     return console.log(err);
+//                 }
+//                 if(docs){
+//                     res.send(docs.sort());
+//                 }
+//             })
+//         );
+// });
 
 
-router.post('/distinctType', (req, res)=> {
-    const collectionName = 'polovni';
-    cardb.collection(collectionName)
-        .distinct(
-            "karoserija",
-            {}, // query object
-            (function(err, docs){
-                if(err){
-                    return console.log(err);
-                }
-                if(docs){
-                    res.send(docs.sort());
-                }
-            })
-        );
-});
+// router.post('/distinctType', (req, res)=> {
+//     const collectionName = 'polovni';
+//     cardb.collection(collectionName)
+//         .distinct(
+//             "karoserija",
+//             {}, // query object
+//             (function(err, docs){
+//                 if(err){
+//                     return console.log(err);
+//                 }
+//                 if(docs){
+//                     res.send(docs.sort());
+//                 }
+//             })
+//         );
+// });
 
-router.post('/distinctRegion', (req, res)=> {
-    const collectionName = 'geolocations';
-    cardb.collection(collectionName)
-        .distinct(
-            "city",
-            {}, // query object
-            (function(err, docs){
-                if(err){
-                    return console.log(err);
-                }
-                if(docs){
-                    res.send(docs.sort());
-                }
-            })
-        );
-});
+// router.post('/distinctRegion', (req, res)=> {
+//     const collectionName = 'geolocations';
+//     cardb.collection(collectionName)
+//         .distinct(
+//             "city",
+//             {}, // query object
+//             (function(err, docs){
+//                 if(err){
+//                     return console.log(err);
+//                 }
+//                 if(docs){
+//                     res.send(docs.sort());
+//                 }
+//             })
+//         );
+// });
 
 module.exports = router;
