@@ -1,84 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const MongoClient = require('mongodb').MongoClient;
-const MongoDB = require('../database/mongo_client/mongo_client');
-const assert = require('assert');
 const geolocation = require('../services/geolocation/geolocation');
 const normalDistribution = require('../services/normal_distribution/normal_distribution');
 const distinctService = require('../services/distinct/distinct_queries');
-
-// MongoDB.connectDB();
-
-// const url = 'mongodb://localhost:27017';
-//
-// const dbName = 'Polovni';
-// let cardb = null;
-//
-// MongoClient.connect(url, { useUnifiedTopology: true } , async function(err, client) {
-//   assert.equal(null, err);
-//
-//   cardb = client.db(dbName);
-//   await cardb.collection("polovni").createIndex({'marka':1, 'model':1});
-//   await cardb.collection("test_cene").createIndex({'link':1, 'date':1});
-//   console.error("Connected successfully to server");
-//   // client.close();
-// });
-
-
+const priceTime = require('../services/avg_query/price_time');
 
 router.get('/', function(req, res, next) {
   res.send( { title: 'Express' });
 });
 
-router.post('/queryFromDateToDate',  (req, res)=> {
-  // console.log("Usao!");
-    // console.log(req.body);
-  const collectionName = 'polovni';
-  let match_object =   req.body.searchBody;
-  match_object["link"] = { "$ne": 0 };
-  console.log(match_object);
-
-  cardb.collection(collectionName).aggregate([
-      {
-          "$match": match_object
-      },
-      {
-          '$lookup': {
-              'from': 'test_cene',
-              'localField': 'link',
-              'foreignField': 'link',
-              'as': 'istorija_cena'
-          }
-      },
-      {
-          '$unwind': '$istorija_cena'
-      },
-      {
-          "$match" : { "istorija_cena.date": {"$gte": new Date(req.body.dates[0]), "$lte": new Date(req.body.dates[1])} }
-      },
-      {
-          '$group': {
-              '_id': '$istorija_cena.date',
-              "places" : {"$push":"$$ROOT"},
-              'avg_price': {
-                  '$avg': '$istorija_cena.price'
-              },
-              "max": { "$max" : "$istorija_cena.price" },
-              "min": { "$min" : "$istorija_cena.price" }
-
-          }
-      },
-      {
-          "$sort": {"_id": 1}
-      }
-
-  ]).toArray((err, results) => {
-    assert.equal(err, null);
-    // console.log(results);
-    res.send(results);
-  });
-
-
+router.post('/queryFromDateToDate',  async (req, res)=> {
+    let result = await priceTime.price_time(req.body.searchBody, req.body.dates[0], req.body.dates[1]);
+    res.send(result);
 });
 
 router.post('/normal',  async (req, res)=> {
@@ -93,7 +26,6 @@ router.post('/places',  async (req, res)=> {
     res.send(coords);
 
 });
-
 
 router.post('/distinct', async (req, res)=> {
     //TODO samo ovde namesti da saljes req.body.field, da ne stoji kardkodirano makra i ruta moze da se zove samo distinct
