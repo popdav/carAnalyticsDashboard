@@ -1,21 +1,9 @@
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-const url = 'mongodb://localhost:27017';
-
-const dbName = 'Polovni';
-let db = null;
-
-MongoClient.connect(url, { useUnifiedTopology: true } , async function(err, client) {
-    assert.equal(null, err);
-    db = client.db(dbName);
-});
-
+const MongoDB = require('../../database/mongo_client/mongo_client');
 
 async function get(match_object) {
-    let groupID = JSON.parse(JSON.stringify(match_object));
+    // let groupID = JSON.parse(JSON.stringify(match_object));
     match_object['cena'] = {'$gte': 0};
-    console.log(match_object)
-    console.log(groupID)
+    const db = await MongoDB.getDB();
     return await db.collection('polovni').aggregate([
         {
             "$match" : match_object

@@ -1,18 +1,7 @@
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-const url = 'mongodb://localhost:27017';
-
-const dbName = 'Polovni';
-let db = null;
-
-MongoClient.connect(url, { useUnifiedTopology: true } , async function(err, client) {
-    assert.equal(null, err);
-    db = client.db(dbName);
-    await db.collection("geolocations").createIndex({'city':1});
-
-});
+const MongoDB = require('../../database/mongo_client/mongo_client');
 
 async function get_places(match_object) {
+    const db = await MongoDB.getDB();
     let places = await db.collection('polovni')
         .aggregate([ {"$match" : match_object}, {"$project": {"mesto" : 1, "_id" : 0 }}]).toArray();
 
@@ -31,6 +20,7 @@ async function map_to_coords(match_object) {
 }
 
 async function get_coords(city) {
+    const db = await MongoDB.getDB();
     let coords = await db.collection('geolocations').findOne(
         {"city": city}
     );
@@ -43,4 +33,3 @@ async function get_coords(city) {
 }
 
 exports.map_to_coords = map_to_coords;
-

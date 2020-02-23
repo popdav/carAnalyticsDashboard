@@ -1,24 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
+const MongoDB = require('../database/mongo_client/mongo_client');
 const assert = require('assert');
 const geolocation = require('../services/geolocation/geolocation');
 const normalDistribution = require('../services/normal_distribution/normal_distribution');
 
-const url = 'mongodb://localhost:27017';
+// MongoDB.connectDB();
 
-const dbName = 'Polovni';
-let cardb = null;
-
-MongoClient.connect(url, { useUnifiedTopology: true } , async function(err, client) {
-  assert.equal(null, err);
-
-  cardb = client.db(dbName);
-  await cardb.collection("polovni").createIndex({'marka':1, 'model':1});
-  await cardb.collection("test_cene").createIndex({'link':1, 'date':1});
-  console.error("Connected successfully to server");
-  // client.close();
-});
+// const url = 'mongodb://localhost:27017';
+//
+// const dbName = 'Polovni';
+// let cardb = null;
+//
+// MongoClient.connect(url, { useUnifiedTopology: true } , async function(err, client) {
+//   assert.equal(null, err);
+//
+//   cardb = client.db(dbName);
+//   await cardb.collection("polovni").createIndex({'marka':1, 'model':1});
+//   await cardb.collection("test_cene").createIndex({'link':1, 'date':1});
+//   console.error("Connected successfully to server");
+//   // client.close();
+// });
 
 
 
@@ -84,7 +87,7 @@ router.post('/normal',  async (req, res)=> {
 });
 
 router.post('/places',  async (req, res)=> {
-    console.log(req.body)
+    console.log(req.body);
     let coords = await geolocation.map_to_coords(req.body);
     res.send(coords);
 
