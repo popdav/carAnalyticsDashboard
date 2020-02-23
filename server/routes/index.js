@@ -5,6 +5,7 @@ const MongoDB = require('../database/mongo_client/mongo_client');
 const assert = require('assert');
 const geolocation = require('../services/geolocation/geolocation');
 const normalDistribution = require('../services/normal_distribution/normal_distribution');
+const distinctService = require('../services/distinct/distinct_queries');
 
 // MongoDB.connectDB();
 
@@ -94,26 +95,16 @@ router.post('/places',  async (req, res)=> {
 });
 
 
-router.post('/distinctMakes', (req, res)=> {
-    const collectionName = 'polovni';
-    cardb.collection(collectionName)
-        .distinct(
-            "marka",
-            {}, // query object
-            (function(err, docs){
-                if(err){
-                    return console.log(err);
-                }
-                if(docs){
-                    res.send(docs.sort());
-                }
-            })
-        );
+router.post('/distinct', async (req, res)=> {
+    //TODO samo ovde namesti da saljes req.body.field, da ne stoji kardkodirano makra i ruta moze da se zove samo distinct
+    const distinctMakes = await distinctService.getDistinct("marka", req.body.match);
+    res.send(distinctMakes);
+
 });
 
 router.post('/distinctModels', (req, res)=> {
     const collectionName = 'polovni';
-    console.log(req.body)
+    console.log(req.body);
     cardb.collection(collectionName)
         .distinct(
             "model",
