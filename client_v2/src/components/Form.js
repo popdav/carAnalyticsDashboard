@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import {setData} from '../actions/index'
 import {addData} from "../actions/index";
 import {resetData} from "../actions/index";
-import store from "../store/index";
 import axios from "axios";
 
 
@@ -52,9 +51,9 @@ class Form extends Component {
         this.toPower = this.toPower.bind(this);
     }
     async componentDidMount() {
-        let makes = await axios.post('/distinctMakes');
-        let type = await axios.post('/distinctType');
-        let region = await axios.post('/distinctRegion');
+        let makes = await axios.post('/distinct', {field : 'marka'});
+        let type = await axios.post('/distinct', {field: 'karoserija'});
+        let region = await axios.post('/distinct', {field: 'region'});
         this.setState({
             makes: makes.data,
             type: type.data,
@@ -74,7 +73,7 @@ class Form extends Component {
     makeChange = async (e) => {
         e.persist();
         if(e.target.value !== 'None') {
-            let models = await axios.post('/distinctModels', {'marka': e.target.value});
+            let models = await axios.post('/distinct', {field: 'model',  match:{'marka': e.target.value}});
             this.setState({
                 selectedMake: e.target.value,
                 models: models.data
@@ -192,28 +191,24 @@ class Form extends Component {
 
     };
 
+    getSearchBodyGLTE = (from, to)  => {
+        let body = {
+            "$gte" : (this.state[from] === '' ? undefined : parseInt(this.state[from])),
+            "$lte" : (this.state[to] === '' ? undefined : parseInt(this.state[to]))
+        };
+        if(this.state[from] === '' && this.state[from] === '')
+            body = undefined;
+
+        return body;
+    };
+
      buttonClicked = async () => {
 
-        let kmBody = {
-            "$gte" : (this.state.fromKm === '' ? undefined : parseInt(this.state.fromKm)),
-            "$lte" : (this.state.toKm === '' ? undefined : parseInt(this.state.toKm))
-        };
-        if(this.state.fromKm === '' && this.state.toKm === '')
-            kmBody = undefined;
 
-        let powerBody = {
-            "$gte" : (this.state.fromPower === '' ? undefined : parseInt(this.state.fromPower)),
-            "$lte" : (this.state.toPower === '' ? undefined : parseInt(this.state.toPower))
-        };
-        if(this.state.fromPower === '' && this.state.toPower === '')
-            powerBody = undefined;
+        let kmBody = this.getSearchBodyGLTE('fromKm', 'toKm');
+        let powerBody = this.getSearchBodyGLTE('fromPower', 'toPower');
+        let priceBody = this.getSearchBodyGLTE('fromPrice', 'toPrice');
 
-         let priceBody = {
-             "$gte" : (this.state.fromPrice === '' ? undefined : parseInt(this.state.fromPrice)),
-             "$lte" : (this.state.toPrice === '' ? undefined : parseInt(this.state.toPrice))
-         };
-         if(this.state.fromPrice === '' && this.state.toPrice === '')
-             priceBody = undefined;
 
         const body = {
             'marka' : this.state.selectedMake,
@@ -224,49 +219,23 @@ class Form extends Component {
             'karoserija' : this.state.selectedType === '' ? undefined : this.state.selectedType,
             'mesto' : this.state.selectedRegion === '' ? undefined : this.state.selectedRegion
         };
-        console.log(this.props)
-         console.log(body)
+        console.log(body);
         const res = await axios.post('/queryFromDateToDate', {searchBody : body, dates : this.props.dates});
         console.log(res.data);
         if(res.data.length === 0)
             return;
-        console.log("STORE:");
-        console.log(store.getState());
-        if(store.getState().data.length === 0) {
-            this.props.setData({
-                 data: res.data,
-                 numberOf: res.data.map(o => o.places.length),
-                 stylePlot: {display: "block"},
-                 showMap: true,
-                 x: res.data.map((o) => o._id),
-                 y: res.data.map((o) => o.avg_price),
-                 name: res.data[0].places[0]['marka'] + " " + res.data[0].places[0]['model'],
-                searchBody: body
-            })
-        } else if(store.getState().data.length === 1) {
-             this.props.addData({
-                 data: res.data,
-                 numberOf: res.data.map(o => o.places.length),
-                 stylePlot: {display: "block"},
-                 showMap: true,
-                 x: res.data.map((o) => o._id),
-                 y: res.data.map((o) => o.avg_price),
-                 name: res.data[0].places[0]['marka'] + " " + res.data[0].places[0]['model'],
-                 searchBody: body
-             })
-        } else {
-             await this.props.resetData({});
-            this.props.setData({
-                data: res.data,
-                numberOf: res.data.map(o => o.places.length),
-                stylePlot: {display: "block"},
-                showMap: true,
-                x: res.data.map((o) => o._id),
-                y: res.data.map((o) => o.avg_price),
-                name: res.data[0].places[0]['marka'] + " " + res.data[0].places[0]['model'],
-                searchBody: body
-            })
-        }
+
+        this.props.addData({
+             data: res.data,
+             numberOf: res.data.map(o => o.places.length),
+             stylePlot: {display: "block"},
+             showMap: true,
+             x: res.data.map((o) => o._id),
+             y: res.data.map((o) => o.avg_price),
+             name: res.data[0].places[0]['marka'] + " " + res.data[0].places[0]['model'],
+             searchBody: body
+        })
+
 
     };
 
@@ -274,11 +243,11 @@ class Form extends Component {
 
         return (
             <div>
-                    <div className="form form-inline ">
-                        <div className="vbox">
+                    <div className="form d-inline-flex">
+                        <div className="form-group">
                             <div className="vbox">
-                                <label htmlFor="make">Marka:</label>
-                                <select onChange={this.makeChange} className="form-control" id={"make" + this.state.key} >
+                                <label htmlFor="make" className="col-8">Marka:</label>
+                                <select onChange={this.makeChange} className="form-control col-8" id={"make" + this.state.key} >
                                     <option>None</option>
                                     {this.state.makes.map((e, key) => {
                                         return (
@@ -289,8 +258,8 @@ class Form extends Component {
                             </div>
 
                             <div className="vbox">
-                                <label htmlFor="model">Model:</label>
-                                <select onChange={this.modelChange} className="form-control" id={"model" + this.state.key}>
+                                <label htmlFor="model" className="col-8">Model:</label>
+                                <select onChange={this.modelChange} className="form-control col-8" id={"model" + this.state.key}>
                                     <option>None</option>
                                     {this.state.models.map((e, key) => {
                                         return (
@@ -300,53 +269,31 @@ class Form extends Component {
                                 </select>
                             </div>
                         </div>
-                        <div className="vbox">
-                            <div className="vbox">
-                                <label htmlFor="priceFrom">Cena od (‎€):</label>
-                                <input type="number"  onChange={this.fromPrice} className="form-control" id={"priceFrom" + + this.state.key} />
+                        <div className="form-group">
+                            <div className="vbox ">
+                                <label htmlFor="priceFrom" className="col-9">Cena od (‎€):</label>
+                                <input type="number"  onChange={this.fromPrice} className="form-control col-7" id={"priceFrom" + + this.state.key} />
                             </div>
-                            <div className="vbox">
-                                <label htmlFor="priceTo">Cena do (‎€):</label>
-                                <input type="number"  onChange={this.toPrice} className="form-control" id={"priceTo" + this.state.key} />
-                            </div>
-                        </div>
-                        <div className="vbox">
-                            <div className="vbox">
-                                <label htmlFor="kmFrom">Kilometraza od (km):</label>
-                                <select onChange={this.fromKm} className="form-control" id={"kmFrom" + this.state.key}>
-                                    <option>None</option>
-                                    <option>0</option>
-                                    <option>100000</option>
-                                    <option>150000</option>
-                                    <option>200000</option>
-                                </select>
-                            </div>
-                            <div className="vbox">
-                                <label htmlFor="kmTo">Kilometraza do (km):</label>
-                                <select onChange={this.toKm} className="form-control" id={"kmTo" + this.state.key}>
-                                    <option>None</option>
-                                    <option>200000</option>
-                                    <option>150000</option>
-                                    <option>100000</option>
-                                    <option>0</option>
-                                </select>
+                            <div className="vbox ">
+                                <label htmlFor="priceTo" className="col-9">Cena do (‎€):</label>
+                                <input type="number"  onChange={this.toPrice} className="form-control col-7" id={"priceTo" + this.state.key} />
                             </div>
                         </div>
 
-                        <div className="vbox">
+                        <div className="form-group ">
                             <div className="vbox">
-                                <label htmlFor="powerFrom">Snaga od (KS):</label>
-                                <input type="number"  onChange={this.fromPower} className="form-control" id={"powerFrom" + + this.state.key} />
+                                <label htmlFor="powerFrom" className="col-10">Snaga od (KS):</label>
+                                <input type="number"  onChange={this.fromPower} className="form-control col-8" id={"powerFrom" + + this.state.key} />
                             </div>
                             <div className="vbox">
-                                <label htmlFor="powerTo">Snaga do (KS):</label>
-                                <input type="number"  onChange={this.toPower} className="form-control " id={"powerTo" + this.state.key} />
+                                <label htmlFor="powerTo" className="col-10">Snaga do (KS):</label>
+                                <input type="number"  onChange={this.toPower} className="form-control col-8" id={"powerTo" + this.state.key} />
                             </div>
                         </div>
-                        <div className="vbox">
+                        <div className="form-group">
                             <div className="vbox">
-                                <label htmlFor="region">Region:</label>
-                                <select onChange={this.regionChange} className="form-control" id={"region" + this.state.key}>
+                                <label htmlFor="region" className="col-8">Region:</label>
+                                <select onChange={this.regionChange} className="form-control col-8" id={"region" + this.state.key}>
                                     <option>None</option>
                                     {this.state.region.map((e, key) => {
                                         return (
@@ -356,14 +303,36 @@ class Form extends Component {
                                 </select>
                             </div>
                             <div className="vbox">
-                                <label htmlFor="type">Karoserija:</label>
-                                <select onChange={this.typeChange} className="form-control" id={"type" + this.state.key}>
+                                <label htmlFor="type" className="col-8">Karoserija:</label>
+                                <select onChange={this.typeChange} className="form-control col-8" id={"type" + this.state.key}>
                                     <option>None</option>
                                     {this.state.type.map((e, key) => {
                                         return (
                                             <option key={key}>{e}</option>
                                         )
                                     })}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <div className="vbox">
+                                <label htmlFor="kmFrom" className="col-16">Kilometraza od (km):</label>
+                                <select onChange={this.fromKm} className="form-control" id={"kmFrom" + this.state.key}>
+                                    <option>None</option>
+                                    <option>0</option>
+                                    <option>100000</option>
+                                    <option>150000</option>
+                                    <option>200000</option>
+                                </select>
+                            </div>
+                            <div className="vbox">
+                                <label htmlFor="kmTo" className="col-15">Kilometraza do (km):</label>
+                                <select onChange={this.toKm} className="form-control" id={"kmTo" + this.state.key}>
+                                    <option>None</option>
+                                    <option>200000</option>
+                                    <option>150000</option>
+                                    <option>100000</option>
+                                    <option>0</option>
                                 </select>
                             </div>
                         </div>

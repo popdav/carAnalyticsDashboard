@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { Map, TileLayer, Marker } from 'react-leaflet';
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
+//import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 import axios from 'axios'
 import "./App.css";
 import MarkerClusterGroup from "./MarkerClusterGroup";
 require("leaflet.markercluster");
 require('react-leaflet-markercluster/dist/styles.min.css');
-const provider = new OpenStreetMapProvider();
+//const provider = new OpenStreetMapProvider();
 
 class Mapa extends Component{
     constructor(props) {

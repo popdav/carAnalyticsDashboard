@@ -39,7 +39,7 @@ router.post('/places',  async (req, res)=> {
 
 router.post('/distinct', async (req, res)=> {
     //TODO samo ovde namesti da saljes req.body.field, da ne stoji kardkodirano makra i ruta moze da se zove samo distinct
-    const distinctMakes = await distinctService.getDistinct("marka", req.body.match);
+    const distinctMakes = await distinctService.getDistinct(req.body.field, req.body.match);
     res.send(distinctMakes);
 
 });

@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import './bootstrap.min.css'
 import './App.css';
 
-import Octicon, {Gear, Person, Bell, Mail} from '@primer/octicons-react'
 
 
 

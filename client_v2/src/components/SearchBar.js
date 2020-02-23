@@ -43,7 +43,6 @@ class SearchBar extends Component {
     };
 
     dateChange = (e) => {
-        console.log(e)
 
         if(e === null) {
             this.setState({

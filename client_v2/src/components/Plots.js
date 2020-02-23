@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import Plot from "react-plotly.js";
 import Mapa from './Mapa'
 import NormalPlot from "./NormalPlot";
-import axios from 'axios'
 
 
 class Plots extends Component {
