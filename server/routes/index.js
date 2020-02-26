@@ -6,6 +6,7 @@ const distinctService = require('../services/distinct/distinct_queries');
 const priceTime = require('../services/avg_query/price_time');
 const cookieParser = require('cookie-parser');
 const cookieHandler = require('../services/cookies/cookie_handler');
+const path = require('path');
 
 router.get('/test', async(req, res) => {
     console.log(req.cookies['userId']);
