@@ -16,7 +16,7 @@ router.get('/test', async(req, res) => {
 });
 
 router.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, '../../client_v2/build', 'index.html'));
+    res.sendFile(path.join(__dirname, '../../client_v2/public-build', 'index.html'));
 });
 
 router.post('/queryFromDateToDate',  async (req, res)=> {
