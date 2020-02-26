@@ -15,11 +15,11 @@ router.get('/test', async(req, res) => {
 });
 
 router.get('/', function(req, res) {
-  res.send( { title: 'Express' });
+    res.sendFile(path.join(__dirname, '../../client_v2/build', 'index.html'));
 });
 
 router.post('/queryFromDateToDate',  async (req, res)=> {
-    await cookieHandler.updateQuery(req.cookies['userId'], req.searchBody);
+    //await cookieHandler.updateQuery(req.cookies['userId'], req.searchBody);
     let result = await priceTime.price_time(req.body.searchBody, req.body.dates[0], req.body.dates[1]);
     res.send(result);
 });

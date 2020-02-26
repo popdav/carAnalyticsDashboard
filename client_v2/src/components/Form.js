@@ -54,6 +54,9 @@ class Form extends Component {
         let makes = await axios.post('/distinct', {field : 'marka'});
         let type = await axios.post('/distinct', {field: 'karoserija'});
         let region = await axios.post('/distinct', {field: 'region'});
+        console.log(makes);
+        console.log(type);
+        console.log(region);
         this.setState({
             makes: makes.data,
             type: type.data,
