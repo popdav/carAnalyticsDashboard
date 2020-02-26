@@ -19,7 +19,7 @@ router.get('/', function(req, res) {
 });
 
 router.post('/queryFromDateToDate',  async (req, res)=> {
-    await cookieHandler.updateQuery(req.cookies['userId']);
+    await cookieHandler.updateQuery(req.cookies['userId'], req.searchBody);
     let result = await priceTime.price_time(req.body.searchBody, req.body.dates[0], req.body.dates[1]);
     res.send(result);
 });
