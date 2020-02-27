@@ -7,6 +7,8 @@ import Plot from "react-plotly.js";
 import Mapa from './Mapa'
 import NormalPlot from "./NormalPlot";
 
+import car from './car.svg'
+import search from "./search.svg";
 
 class Plots extends Component {
     constructor(props) {
@@ -95,7 +97,7 @@ class Plots extends Component {
 
         return (
             <div className="container Plots">
-                {this.state.show ? this.showPlots() : ""}
+                {this.state.show ? this.showPlots() : <img src={car} className="car-logo img-fluid d-block mx-auto" alt="logo" />}
             </div>
         );
     }

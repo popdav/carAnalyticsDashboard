@@ -46,15 +46,59 @@
   display: none;
 }
 .forms {
-  width: 80%;
+  width: 86%;
 
+}
+.forms-mobile{
+  width: 100%;
+}
+.form-mobile {
+  margin-right: 5%;
+  margin-bottom: 10px;
 }
 .buttons {
   width: 20%;
+}
+.buttons-mobile {
+  margin-bottom: 10px;
 }
 .input-form {
   width: 35px;
 }
 .footer{
   margin-bottom: 0%;
+}
+.ButtonSearch{
+}
+.search-logo{
+  width: 23%;
+  height: 23%;
+}
+.car-logo{
+  margin-top: 10%;
+  height: auto;
+  max-width: 100%;
+}
+.plus-logo{
+  width: 15%;
+  height: 15%;
+}
+.form-field {
+  max-width: 160px;
+}
+.date-picker{
+  border-radius: 5px;
+  border: 2px solid #f8f9fa!important;
+  background-color: #f8f9fa!important;
+  margin-right: 10px;
+}
+.react-daterange-picker__wrapper{
+  border: #f8f9fa!important;
+  background-color: #f8f9fa!important;
+}
+.react-date-picker__wrapper {
+  border: #f8f9fa!important;
+  background-color: #f8f9fa!important;
+}
+.button{
 }

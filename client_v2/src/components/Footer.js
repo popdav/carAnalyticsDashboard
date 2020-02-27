@@ -20,7 +20,9 @@ class Footer extends Component {
         return (
             <div className="jumbotron jumbotron-fluid text-white bg-primary footer">
                     <div className=" text-center ">
-                        Kontakt: info@autoanaliza.com
+                        Kontakt: <br/>
+                        info@autoanaliza.com<br/>
+                        +381 62 107 76 67
                     </div>
 
             </div>
